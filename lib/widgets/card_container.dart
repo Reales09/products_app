@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class CardContainer extends StatelessWidget {
-  const CardContainer({super.key});
+  final Widget child;
+
+  const CardContainer({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -9,8 +11,9 @@ class CardContainer extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 30),
       child: Container(
         width: double.infinity,
-        height: 300, //TODO borrar
+        padding: EdgeInsets.all(30),
         decoration: _createCardShape(),
+        child: this.child,
       ),
     );
   }
@@ -18,5 +21,12 @@ class CardContainer extends StatelessWidget {
   BoxDecoration _createCardShape() => BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(25),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            offset: Offset(0, 5),
+            blurRadius: 5,
+          )
+        ],
       );
 }
