@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:productos_app/providers/login_form_provider.dart';
 import 'package:productos_app/widgets/widgets.dart';
+import 'package:provider/provider.dart';
+
+import '../ui/input_decorations.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -11,24 +15,34 @@ class LoginScreen extends StatelessWidget {
         child: SingleChildScrollView(
           child: Column(children: [
             SizedBox(
-              height: 250,
+              height: 220,
             ),
             CardContainer(
               child: Column(
                 children: [
                   SizedBox(height: 10),
-                  Text('Login', style: Theme.of(context).textTheme.headline4),
-                  SizedBox(height: 30),
+                  Text('Login',
+                      style: Theme.of(context).textTheme.headlineMedium),
+                  SizedBox(height: 10),
                   // Text('Formulario'),
-                  _LoginForm(),
+
+                  ChangeNotifierProvider(
+                      create: (_) => LoginFormProvider(), child: _LoginForm()),
                 ],
               ),
             ),
+            SizedBox(height: 40),
+            Text(
+              'Version 1.0.0',
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+            ),
             SizedBox(height: 50),
             Text(
-              'Crear nueva cuenta',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              'AZ Smart Technology - Copyright © 2022, Todos los derechos reservados. All rights reserved. Design and powered by AZ Smart.',
+              style: TextStyle(fontSize: 10, fontWeight: FontWeight.w300),
+              textAlign: TextAlign.center,
             ),
+            SizedBox(height: 50),
           ]),
         ),
       ),
@@ -41,27 +55,75 @@ class _LoginForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loginForm = Provider.of<LoginFormProvider>(context);
+
     return Container(
         child: Form(
       //TODO: Manter la referencia al KEY
+      key: loginForm.formKey,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       child: Column(
         children: [
           TextFormField(
             autocorrect: false,
             keyboardType: TextInputType.emailAddress,
-            decoration: InputDecoration(
-              enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.deepPurple),
-              ),
-              focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.deepPurple, width: 2),
-              ),
-              hintText: 'Usuario',
+            decoration: InputDecorations.authInputDecoration(
+              hintText: 'Ingresa usuario',
               labelText: 'Usuario',
-              labelStyle: TextStyle(color: Colors.grey),
-              prefixIcon: Icon(Icons.person_outline, color: Colors.deepPurple),
+              prefixIcon: Icons.person_outline,
             ),
+            onChanged: (value) => loginForm.email = value,
+            validator: (value) {
+              String pattern =
+                  r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+              RegExp regExp = new RegExp(pattern);
+              return regExp.hasMatch(value ?? '')
+                  ? null
+                  : 'El valor ingresado no es un correo valido';
+            },
           ),
+          SizedBox(height: 30),
+          TextFormField(
+            autocorrect: false,
+            obscureText: true,
+            keyboardType: TextInputType.text,
+            decoration: InputDecorations.authInputDecoration(
+              hintText: 'Ingresa contraseña',
+              labelText: 'Contraseña',
+              prefixIcon: Icons.lock_outline,
+            ),
+            onChanged: (value) => loginForm.password = value,
+            validator: (value) {
+              if (value != null && value.length >= 6) {
+                return null;
+              } else {
+                return 'La contraseña debe tener al menos 6 caracteres';
+              }
+            },
+          ),
+          SizedBox(height: 30),
+          MaterialButton(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
+              disabledColor: Colors.grey,
+              elevation: 0,
+              color: Colors.red,
+              padding: EdgeInsets.symmetric(horizontal: 80, vertical: 15),
+              child: Container(
+                  child: Text(loginForm.isloading ? 'Espere...' : 'Ingresar',
+                      style: TextStyle(color: Colors.white))),
+              onPressed: loginForm.isloading
+                  ? null
+                  : () async {
+                      FocusScope.of(context).unfocus();
+                      if (!loginForm.isValidForm()) return;
+                      loginForm.isloading = true;
+                      await Future.delayed(Duration(seconds: 2));
+
+                      //TODO: validar si el login es correcto
+                      loginForm.isloading = false;
+                      Navigator.pushReplacementNamed(context, 'home');
+                    })
         ],
       ),
     ));
