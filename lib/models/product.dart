@@ -16,20 +16,21 @@ class Product {
   String name;
   String? picture;
   double price;
+  String? id;
 
   factory Product.fromRawJson(String str) => Product.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(
-        available: json["available"],
+        available: json["avaliable"],
         name: json["name"],
         picture: json["picture"],
         price: json["price"]?.toDouble(),
       );
 
   Map<String, dynamic> toJson() => {
-        "available": available,
+        "avaliable": available,
         "name": name,
         "picture": picture,
         "price": price,

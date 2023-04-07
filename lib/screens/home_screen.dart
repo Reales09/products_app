@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:productos_app/services/products_service.dart';
+import 'package:provider/provider.dart';
 
 import '../widgets/widgets.dart';
 
@@ -7,6 +9,8 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ProductsService productsService =
+        Provider.of<ProductsService>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Productos'),
