@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:productos_app/models/models.dart';
 
 class ProductCard extends StatelessWidget {
-  const ProductCard({super.key});
+  final Product product;
+
+  const ProductCard({super.key, required this.product});
 
   @override
   Widget build(BuildContext context) {
@@ -15,12 +18,22 @@ class ProductCard extends StatelessWidget {
         child: Stack(
           alignment: Alignment.bottomLeft,
           children: [
-            _BackgroundImage(),
-            _ProductDetails(),
-            Positioned(top: 0, right: 0, child: _PriceTag()),
+            _BackgroundImage(url: product.picture),
+            _ProductDetails(name: product.name, id: product.id),
+            Positioned(
+                top: 0,
+                right: 0,
+                child: _PriceTag(
+                  price: product.price,
+                )),
 
             //TODO mostrar de manera condicional
-            Positioned(top: 0, left: 0, child: _NotAvaliable()),
+            if (!product.available)
+              Positioned(
+                top: 0,
+                left: 0,
+                child: _NotAvaliable(),
+              ),
           ],
         ),
       ),
@@ -71,8 +84,10 @@ class _NotAvaliable extends StatelessWidget {
 }
 
 class _PriceTag extends StatelessWidget {
-  const _PriceTag({
+  double price;
+  _PriceTag({
     super.key,
+    required this.price,
   });
 
   @override
@@ -82,7 +97,7 @@ class _PriceTag extends StatelessWidget {
         fit: BoxFit.contain,
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 10),
-          child: Text('\$ 150.00',
+          child: Text('\$ $price',
               style: TextStyle(
                   color: Colors.white,
                   fontSize: 20,
@@ -101,8 +116,12 @@ class _PriceTag extends StatelessWidget {
 }
 
 class _ProductDetails extends StatelessWidget {
-  const _ProductDetails({
+  String name;
+  String id;
+  _ProductDetails({
     super.key,
+    required this.name,
+    required this.id,
   });
 
   @override
@@ -117,7 +136,7 @@ class _ProductDetails extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Disco duro SSD 1TB',
+              name,
               style: TextStyle(
                   fontSize: 20,
                   color: Colors.white,
@@ -126,7 +145,7 @@ class _ProductDetails extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
             Text(
-              'id del disco duro',
+              id,
               style: TextStyle(
                 fontSize: 15,
                 color: Colors.white,
@@ -147,8 +166,10 @@ class _ProductDetails extends StatelessWidget {
 }
 
 class _BackgroundImage extends StatelessWidget {
-  const _BackgroundImage({
+  String? url;
+  _BackgroundImage({
     super.key,
+    this.url,
   });
 
   @override
@@ -160,8 +181,8 @@ class _BackgroundImage extends StatelessWidget {
         height: 400,
         child: FadeInImage(
           placeholder: AssetImage('assets/jar-loading.gif'),
-          image: NetworkImage('https://via.placeholder.com/400x300/f6f6f6'),
-          fit: BoxFit.cover,
+          image: NetworkImage(url!),
+          fit: BoxFit.fill,
         ),
       ),
     );

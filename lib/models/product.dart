@@ -10,6 +10,7 @@ class Product {
     required this.name,
     this.picture,
     required this.price,
+    this.id,
   });
 
   bool available;

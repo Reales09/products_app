@@ -3,6 +3,7 @@ import 'package:productos_app/services/products_service.dart';
 import 'package:provider/provider.dart';
 
 import '../widgets/widgets.dart';
+import 'screens.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -11,15 +12,23 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final ProductsService productsService =
         Provider.of<ProductsService>(context);
+
+    if (productsService.isLoading) {
+      return const LoadingScreen();
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Productos'),
       ),
       body: ListView.builder(
-        itemCount: 10,
+        itemCount: productsService.products.length,
         itemBuilder: (BuildContext context, int index) => GestureDetector(
-            onTap: () => Navigator.pushNamed(context, 'product'),
-            child: ProductCard()),
+          onTap: () => Navigator.pushNamed(context, 'product'),
+          child: ProductCard(
+            product: productsService.products[index],
+          ),
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
