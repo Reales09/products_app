@@ -9,6 +9,8 @@ class ProductsService extends ChangeNotifier {
   final String _baseUrl = 'flutter-varios-58a5a-default-rtdb.firebaseio.com';
 
   final List<Product> products = [];
+  Product? selectedProduct;
+
   bool isLoading = true;
 
   ProductsService() {

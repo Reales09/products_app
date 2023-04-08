@@ -117,7 +117,7 @@ class _PriceTag extends StatelessWidget {
 
 class _ProductDetails extends StatelessWidget {
   String name;
-  String id;
+  String? id;
   _ProductDetails({
     super.key,
     required this.name,
@@ -145,7 +145,7 @@ class _ProductDetails extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
             Text(
-              id,
+              id!,
               style: TextStyle(
                 fontSize: 15,
                 color: Colors.white,
@@ -179,11 +179,16 @@ class _BackgroundImage extends StatelessWidget {
       child: Container(
         width: double.infinity,
         height: 400,
-        child: FadeInImage(
-          placeholder: AssetImage('assets/jar-loading.gif'),
-          image: NetworkImage(url!),
-          fit: BoxFit.fill,
-        ),
+        child: url == null
+            ? Image(
+                image: AssetImage('assets/no-image.png'),
+                fit: BoxFit.cover,
+              )
+            : FadeInImage(
+                placeholder: AssetImage('assets/jar-loading.gif'),
+                image: NetworkImage(url!),
+                fit: BoxFit.fill,
+              ),
       ),
     );
   }
