@@ -54,8 +54,12 @@ class ProductsService extends ChangeNotifier {
     final url = Uri.https(_baseUrl, 'products/${product.id}.json');
     final resp = await http.put(url, body: json.encode(product.toJson()));
     final decodedData = json.decode(resp.body);
-    print(decodedData);
     //TODO actualizar el producto en la lista
+
+    final index = products.indexWhere((element) => element.id == product.id);
+    this.products[index] = product;
+    notifyListeners();
+
     return product.id!;
   }
 }
