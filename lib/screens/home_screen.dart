@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:productos_app/models/product.dart';
 import 'package:productos_app/services/products_service.dart';
 import 'package:provider/provider.dart';
 
@@ -27,6 +28,7 @@ class HomeScreen extends StatelessWidget {
           onTap: () {
             productsService.selectedProduct =
                 productsService.products[index].copy();
+
             Navigator.pushNamed(context, 'product');
           },
           child: ProductCard(
