@@ -42,7 +42,8 @@ class ProductsService extends ChangeNotifier {
   Future saveOrCreateProduct(Product product) async {
     if (product.id == null) {
       //es necesario crear
-      isSaving = true;
+      // isSaving = true;
+      await this.createProduct(product);
       notifyListeners();
     } else {
       // es necesario actualizar
@@ -61,5 +62,19 @@ class ProductsService extends ChangeNotifier {
     notifyListeners();
 
     return product.id!;
+  }
+
+  Future<String> createProduct(Product product) async {
+    final url = Uri.https(_baseUrl, 'products.json');
+    final resp = await http.post(url, body: json.encode(product.toJson()));
+    final decodedData = json.decode(resp.body);
+    //TODO actualizar el producto en la lista
+
+    product.id = decodedData['name'];
+
+    this.products.add(product);
+    notifyListeners();
+
+    return '';
   }
 }
