@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 
@@ -10,6 +11,7 @@ class ProductsService extends ChangeNotifier {
 
   final List<Product> products = [];
   late Product selectedProduct;
+  File? newPictureFile;
 
   bool isLoading = true;
 
@@ -49,6 +51,9 @@ class ProductsService extends ChangeNotifier {
       // es necesario actualizar
       await this.updateProduct(product);
     }
+
+    isSaving = false;
+    notifyListeners();
   }
 
   Future<String> updateProduct(Product product) async {
@@ -76,5 +81,42 @@ class ProductsService extends ChangeNotifier {
     notifyListeners();
 
     return '';
+  }
+
+  void uodateSelectedProductImage(String path) {
+    this.selectedProduct.picture = path;
+    this.newPictureFile = File.fromUri(Uri(path: path));
+    notifyListeners();
+  }
+
+  Future<String?> uploadImage() async {
+    if (this.newPictureFile == null) return null;
+
+    this.isSaving = true;
+    notifyListeners();
+
+    final url = Uri.parse(
+        'https://api.cloudinary.com/v1_1/dxgckodih/image/upload?upload_preset=xrlmacpy');
+
+    final imageUploadRequest = http.MultipartRequest('POST', url);
+    final file =
+        await http.MultipartFile.fromPath('file', this.newPictureFile!.path);
+
+    imageUploadRequest.files.add(file);
+
+    final streamResponse = await imageUploadRequest.send();
+    final resp = await http.Response.fromStream(streamResponse);
+
+    if (resp.statusCode != 200 && resp.statusCode != 201) {
+      print('Algo salio mal');
+      print(resp.body);
+      return null;
+    }
+
+    this.newPictureFile = null;
+
+    final decodedData = json.decode(resp.body);
+    return decodedData['secure_url'];
+    print(resp.body);
   }
 }

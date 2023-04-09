@@ -73,6 +73,8 @@ class _ProductScreenBody extends StatelessWidget {
                         }
 
                         print('Tenemos imagen: ${pickedFile.path}');
+                        productService
+                            .uodateSelectedProductImage(pickedFile.path);
                       },
                       icon: Icon(
                         Icons.camera_alt_outlined,
@@ -89,12 +91,21 @@ class _ProductScreenBody extends StatelessWidget {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.save_outlined),
-        onPressed: () async {
-          //TODO: Guardar producto
-          if (!productForm.isValidForm()) return;
-          await productService.saveOrCreateProduct(productForm.product);
-        },
+        child: productService.isSaving
+            ? CircularProgressIndicator(
+                color: Colors.white,
+              )
+            : Icon(Icons.save_outlined),
+        onPressed: productService.isSaving
+            ? null
+            : () async {
+                //TODO: Guardar producto
+                if (!productForm.isValidForm()) return;
+                final String? imageUrl = await productService.uploadImage();
+                if (imageUrl != null) productForm.product.picture = imageUrl;
+
+                await productService.saveOrCreateProduct(productForm.product);
+              },
       ),
     );
   }
