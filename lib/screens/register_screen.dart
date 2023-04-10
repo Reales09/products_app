@@ -5,8 +5,8 @@ import 'package:provider/provider.dart';
 
 import '../ui/input_decorations.dart';
 
-class LoginScreen extends StatelessWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+class RegisterScreen extends StatelessWidget {
+  const RegisterScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class LoginScreen extends StatelessWidget {
               child: Column(
                 children: [
                   SizedBox(height: 10),
-                  Text('Login',
+                  Text('Crear cuenta',
                       style: Theme.of(context).textTheme.headlineMedium),
                   SizedBox(height: 10),
                   // Text('Formulario'),
@@ -32,26 +32,14 @@ class LoginScreen extends StatelessWidget {
               ),
             ),
             SizedBox(height: 40),
-            Text(
-              'Version 1.0.0',
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 50),
-            Text(
-              'AZ Smart Technology - Copyright © 2022, Todos los derechos reservados. All rights reserved. Design and powered by AZ Smart.',
-              style: TextStyle(fontSize: 10, fontWeight: FontWeight.w300),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: 20),
             TextButton(
-              onPressed: () =>
-                  Navigator.pushReplacementNamed(context, 'register'),
+              onPressed: () => Navigator.pushReplacementNamed(context, 'login'),
               style: ButtonStyle(
                 shape: MaterialStateProperty.all(StadiumBorder()),
                 overlayColor: MaterialStateProperty.all(Colors.transparent),
               ),
               child: Text(
-                'Crear una nueva cuenta',
+                '¿Ya tienes una cuenta?',
                 style: TextStyle(fontSize: 14, color: Colors.black87),
               ),
             ),
