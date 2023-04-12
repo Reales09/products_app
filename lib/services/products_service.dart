@@ -33,9 +33,9 @@ class ProductsService extends ChangeNotifier {
     final Map<String, dynamic> productsMap = json.decode(resp.body);
 
     productsMap.forEach((key, value) {
-      final tempProduct = Product.fromJson(value);
+      final tempProduct = Product.fromRawJson(value);
       tempProduct.id = key;
-      this.products.add(tempProduct);
+      products.add(tempProduct);
     });
 
     isLoading = false;
